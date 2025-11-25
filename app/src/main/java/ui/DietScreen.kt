@@ -15,6 +15,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.example.gymfix.R
 import com.example.gymfix.ui.theme.Orange
 import com.example.gymfix.ui.theme.White
@@ -40,11 +42,9 @@ fun DietScreen(navController: NavController, currentRoute: String = "diet") {
 
             Spacer(Modifier.height(16.dp))
 
-            // Tarjetas de dietas
             DietCard(android.R.drawable.ic_menu_gallery, "Dieta cetogénica (Keto)")
             DietCard(android.R.drawable.ic_menu_gallery, "Dieta DASH")
             DietCard(android.R.drawable.ic_menu_gallery, "Dieta baja en carbohidratos")
-
         }
     }
 }
@@ -87,4 +87,11 @@ fun DietCard(imageRes: Int, title: String) {
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DietScreenPreview() {
+    val navController = rememberNavController()
+    DietScreen(navController = navController, currentRoute = "diet")
 }

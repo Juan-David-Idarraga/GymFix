@@ -121,3 +121,13 @@ fun RecoverScreen(
         )
     }
 }
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun RecoverScreenPreview() {
+    RecoverScreen(
+        onSendClick = {},
+        onBackClick = {}
+    )
+}
+

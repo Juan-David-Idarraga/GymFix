@@ -15,6 +15,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.gymfix.R
 import com.example.gymfix.ui.theme.Orange
 import com.example.gymfix.ui.theme.White
@@ -40,7 +42,6 @@ fun ExerciseScreen(navController: NavController, currentRoute: String = "exercis
 
             Spacer(Modifier.height(16.dp))
 
-            // Tarjetas de ejercicios
             ExerciseCard(android.R.drawable.ic_menu_gallery, "Ejercicios de fuerza y musculación")
             ExerciseCard(android.R.drawable.ic_menu_gallery, "Ejercicios cardiovasculares")
             ExerciseCard(android.R.drawable.ic_menu_gallery, "Ejercicios de alta intensidad")
@@ -77,7 +78,7 @@ fun ExerciseCard(imageRes: Int, title: String) {
             ) {
                 Text(title, fontSize = 14.sp, color = Color.Black)
                 Button(
-                    onClick = { /* TODO: acción ver más */ },
+                    onClick = { /* TODO */ },
                     colors = ButtonDefaults.buttonColors(containerColor = Orange),
                     shape = RoundedCornerShape(50)
                 ) {
@@ -86,4 +87,14 @@ fun ExerciseCard(imageRes: Int, title: String) {
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ExerciseScreenPreview() {
+    val navController = rememberNavController()
+    ExerciseScreen(
+        navController = navController,
+        currentRoute = "exercise"
+    )
 }

@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.gymfix.ui.theme.Orange
 import com.example.gymfix.ui.theme.White
 
@@ -160,3 +162,11 @@ fun ProfileInfoRow(label: String, value: String) {
         Text(value, fontSize = 14.sp, color = Color.DarkGray)
     }
 }
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun ProfileScreenPreview() {
+    val navController = rememberNavController()
+    ProfileScreen(navController = navController, currentRoute = "profile")
+}
+

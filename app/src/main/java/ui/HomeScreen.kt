@@ -17,7 +17,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.gymfix.ui.theme.*
+import com.example.gymfix.ui.theme.GymFixTheme
+import com.example.gymfix.ui.theme.Orange
+import com.example.gymfix.ui.theme.White
+import com.example.gymfix.data.ApiClient
+import com.example.gymfix.data.FormClientResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,20 +40,27 @@ fun HomeScreen(
     var altura by remember { mutableStateOf("") }
     var objetivo by remember { mutableStateOf("") }
 
-    val generos = listOf("Masculino", "Femenino")
-    val edades = (10..100).map { "$it años" }
-    val objetivos = listOf("Bajar de peso", "Mantenerme", "Subir masa muscular")
+    val generos = listOf("Hombre", "Mujer")
+    val objetivos = listOf("Bajar de peso", "Mantenerme", "definicion")
+
+    // Controladores expandido o no
+    var generoExpanded by remember { mutableStateOf(false) }
+    var objetivoExpanded by remember { mutableStateOf(false) }
+
+
 
     Scaffold(
         bottomBar = { BottomNavBar(navController, currentRoute) }
     ) { paddingValues ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(White)
                 .padding(paddingValues)
         ) {
-            // Franja  diagonal naranja
+
+            // Franja diagonal naranja
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,7 +77,7 @@ fun HomeScreen(
                 drawPath(path = path, color = Orange)
             }
 
-            //Caja central con inputs
+            // Caja central
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -73,6 +88,7 @@ fun HomeScreen(
                     .align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Text(
                     "¡COMIENZA EL CAMBIO HOY!",
                     fontSize = 20.sp,
@@ -87,18 +103,48 @@ fun HomeScreen(
                     lineHeight = 18.sp
                 )
 
-                // Input género
-                OutlinedTextField(
-                    value = genero,
-                    onValueChange = { genero = it },
-                    label = { Text("Ingresa tu género") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                )
+                // ------------------
+                // COMBOBOX GÉNERO
+                // ------------------
+                ExposedDropdownMenuBox(
+                    expanded = generoExpanded,
+                    onExpandedChange = { generoExpanded = !generoExpanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = genero,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Selecciona tu género") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = generoExpanded)
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = generoExpanded,
+                        onDismissRequest = { generoExpanded = false }
+                    ) {
+                        generos.forEach { opcion ->
+                            DropdownMenuItem(
+                                text = { Text(opcion) },
+                                onClick = {
+                                    genero = opcion
+                                    generoExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
 
                 Spacer(Modifier.height(12.dp))
 
-                // Input edad
+                // Edad input
                 OutlinedTextField(
                     value = edad,
                     onValueChange = { edad = it },
@@ -109,7 +155,7 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Input peso
+                // Peso
                 OutlinedTextField(
                     value = peso,
                     onValueChange = { peso = it },
@@ -120,7 +166,7 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Input altura
+                // Altura
                 OutlinedTextField(
                     value = altura,
                     onValueChange = { altura = it },
@@ -131,18 +177,48 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Input objetivo
-                OutlinedTextField(
-                    value = objetivo,
-                    onValueChange = { objetivo = it },
-                    label = { Text("¿Cuál es tu objetivo?") },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                )
+                // ------------------
+                // COMBOBOX OBJETIVO
+                // ------------------
+                ExposedDropdownMenuBox(
+                    expanded = objetivoExpanded,
+                    onExpandedChange = { objetivoExpanded = !objetivoExpanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = objetivo,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Selecciona tu objetivo") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = objetivoExpanded)
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = objetivoExpanded,
+                        onDismissRequest = { objetivoExpanded = false }
+                    ) {
+                        objetivos.forEach { opcion ->
+                            DropdownMenuItem(
+                                text = { Text(opcion) },
+                                onClick = {
+                                    objetivo = opcion
+                                    objetivoExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
 
                 Spacer(Modifier.height(24.dp))
 
-                // Botón Calcular
+                // Botón guardar
                 Button(
                     onClick = { onContinueClick() },
                     modifier = Modifier
@@ -151,7 +227,7 @@ fun HomeScreen(
                     shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(containerColor = Orange)
                 ) {
-                    Text("Calcular", color = White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("guardar", color = White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

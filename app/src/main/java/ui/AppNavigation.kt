@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
 
+
 @Composable
 fun AppNavigation() {
     val navController: NavHostController = rememberNavController()
